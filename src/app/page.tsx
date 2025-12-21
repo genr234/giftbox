@@ -1,11 +1,57 @@
-"use client";
+'use client';
 
-import Letter from "@/app/components/Letter";
+import { useState } from 'react';
+import VisualNovel, { Scene } from '@/app/components/VisualNovel';
+import { useVisualNovel } from '@/app/hooks/useVisualNovel';
 
-export default function Home() {
+const gameScenes: Scene[] = [
+    {
+        id: 'scene1',
+        type: 'dialogue',
+        background: 'backgrounds/bedroom_day.png',
+        transition: 'fade',
+        dialogue: {
+            text: 'This is the first scene. Click to continue.',
+        }
+    },
+    {
+        id: 'scene2',
+        type: 'dialogue',
+        background: 'backgrounds/bedroom_day.png',
+        transition: 'fade',
+        dialogue: {
+            text: 'This is the second scene. Click to continue.',
+        }
+    },
+];
+
+export default function GamePage() {
+    const [gameEnded, setGameEnded] = useState(false);
+
+    const {
+        currentScene,
+        allBackgrounds,
+        handleAdvance,
+        handleHotspotClick,
+        restart,
+    } = useVisualNovel({
+        scenes: gameScenes,
+        onGameEnd: () => setGameEnded(true),
+    });
+
+    if (gameEnded) {
+        return (
+            <></>
+        );
+    }
+
     return (
-        <div className="flex min-h-screen items-center justify-center ">
-            <Letter initialZoom={0.4} toZoom={1} duration={800} />
-        </div>
+        <VisualNovel
+            scene={currentScene}
+            allBackgrounds={allBackgrounds}
+            onAdvance={handleAdvance}
+            onHotspotClick={handleHotspotClick}
+            textSpeed={35}
+        />
     );
 }
