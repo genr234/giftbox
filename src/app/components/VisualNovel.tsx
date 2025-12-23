@@ -246,7 +246,9 @@ export default function VisualNovel({
 
                     {scene.hint && (
                         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
-                            <div className="text-amber-100/50 text-sm italic font-serif">
+                            <div className="text-amber-100/50 text-sm italic font-serif bg-stone-800/95 backdrop-blur-sm text-amber-100
+                px-5 py-2.5 rounded-full text-sm font-medium
+                shadow-lg border border-amber-200/20">
                                 {scene.hint}
                             </div>
                         </div>
