@@ -1,4 +1,4 @@
-import SceneGraphEditor from '@/app/components/Editor';
+import SceneGraphEditor from '@/components/Editor';
 
 export default function EditorPage() {
     return <SceneGraphEditor />;

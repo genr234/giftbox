@@ -9,8 +9,8 @@ type LetterProps = {
     initialZoom?: number; // start scale (defaults to 0.4)
     toZoom?: number; // end scale (defaults to 1)
     duration?: number; // ms (defaults to 300)
-
     easing?: EasingName;
+    onClose?: () => void; // callback for closing the letter
 };
 
 export default function Letter({
@@ -18,9 +18,24 @@ export default function Letter({
     toZoom = 1,
     duration = 300,
     easing = 'easeOutCubic',
+    onClose,
 }: LetterProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const rafRef = useRef<number | null>(null);
+
+    // Handle ESC key to close
+    useEffect(() => {
+        if (!onClose) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
 
     useEffect(() => {
         const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -119,8 +134,8 @@ export default function Letter({
     }, [initialZoom, toZoom, duration, easing]);
 
     return (
-        // full-screen center container
-        <div className="absolute inset-0 flex items-center justify-center">
+        // full-screen center container with dark overlay
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center">
             <div className="w-[90vw] max-w-[1200px] max-h-[90vh] overflow-auto">
                 <div className="flex items-center justify-center">
                     <div
@@ -165,6 +180,17 @@ export default function Letter({
                     </div>
                 </div>
             </div>
+
+            {/* Close button */}
+            {onClose && (
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="fixed top-8 right-8 bg-stone-800/90 hover:bg-stone-700 text-stone-200 px-4 py-2 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm border border-stone-600"
+                >
+                    close (ESC)
+                </button>
+            )}
         </div>
     );
 }

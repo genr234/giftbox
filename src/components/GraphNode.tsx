@@ -1,5 +1,5 @@
 import React from 'react';
-import { SceneNode, Connection } from '../types';
+import { SceneNode, Connection } from '../app/types';
 
 
 const NODE_WIDTH = 220;

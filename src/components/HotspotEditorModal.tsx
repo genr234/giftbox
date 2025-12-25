@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { SceneNode, Hotspot, Position } from '../types';
+import { SceneNode, Hotspot, Position } from '../app/types';
 
 interface HotspotEditorModalProps {
     node: SceneNode;
@@ -420,6 +420,21 @@ export function HotspotEditorModal({ node, onClose, onUpdateHotspots }: HotspotE
                                         placeholder="Click to interact"
                                         className="w-full bg-stone-950 border border-stone-700 rounded px-2 py-1.5 text-xs"
                                     />
+                                </div>
+
+                                <div>
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedHotspot.showLetter || false}
+                                            onChange={(e) => updateHotspot(selectedHotspot.id, {showLetter: e.target.checked})}
+                                            className="w-4 h-4 rounded bg-stone-950 border-stone-700 text-amber-500 focus:ring-amber-500"
+                                        />
+                                        <span className="text-xs text-stone-300">show letter on click</span>
+                                    </label>
+                                    <p className="text-[10px] text-stone-600 mt-1 ml-6">
+                                        displays the letter component instead of triggering result immediately
+                                    </p>
                                 </div>
 
                                 <button

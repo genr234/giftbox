@@ -4,9 +4,9 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { GraphNode } from './GraphNode';
 import { NodeInspector } from './NodeInspector';
 import { HotspotEditorModal } from './HotspotEditorModal';
-import type { SceneNode, GraphState, Position } from '../types';
-import { generateCode } from '../lib/codeGenerator';
-import { saveGraph, loadGraph } from '../lib/fileManager';
+import type { SceneNode, GraphState, Position } from '../app/types';
+import { generateCode } from '../app/lib/codeGenerator';
+import { saveGraph, loadGraph } from '../app/lib/fileManager';
 
 const GRID_SIZE = 20;
 const NODE_WIDTH = 220;

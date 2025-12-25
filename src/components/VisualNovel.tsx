@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Letter from './Letter';
 
 export interface DialogueLine {
     speaker?: string;
@@ -75,6 +76,8 @@ export default function VisualNovel({
     const [blackOverlay, setBlackOverlay] = useState(false);
     const [hoveredHotspot, setHoveredHotspot] = useState<string | null>(null);
     const [clickedHotspot, setClickedHotspot] = useState<string | null>(null);
+    const [showLetter, setShowLetter] = useState(false);
+    const [activeHotspotId, setActiveHotspotId] = useState<string | null>(null);
 
     const textIndexRef = useRef(0);
     const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -170,7 +173,25 @@ export default function VisualNovel({
     const handleHotspotClick = (hotspot: Hotspot) => {
         setClickedHotspot(hotspot.id);
         setTimeout(() => setClickedHotspot(null), 200);
-        onHotspotClick?.(hotspot.id, hotspot.onClickResult);
+
+        if (hotspot.showLetter) {
+            setActiveHotspotId(hotspot.id);
+            setShowLetter(true);
+        } else {
+            onHotspotClick?.(hotspot.id, hotspot.onClickResult);
+        }
+    };
+
+    const handleCloseLetter = () => {
+        setShowLetter(false);
+        // Dopo la chiusura, continua il flusso di gioco
+        if (activeHotspotId && scene.type === 'exploration') {
+            const hotspot = scene.hotspots.find(h => h.id === activeHotspotId);
+            if (hotspot) {
+                onHotspotClick?.(hotspot.id, hotspot.onClickResult);
+            }
+        }
+        setActiveHotspotId(null);
     };
 
     return (
@@ -328,6 +349,9 @@ export default function VisualNovel({
                     </div>
                 </div>
             )}
+
+            {/* Letter overlay */}
+            {showLetter && <Letter onClose={handleCloseLetter} />}
         </div>
     );
 }

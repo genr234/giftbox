@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import VisualNovel, { Scene } from '@/app/components/VisualNovel';
+import VisualNovel, { Scene } from '@/components/VisualNovel';
 import { useVisualNovel } from '@/app/hooks/useVisualNovel';
 
 const gameScenes: Scene[] = [

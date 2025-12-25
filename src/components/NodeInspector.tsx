@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SceneNode, Connection } from '../types';
+import type { SceneNode, Connection } from '../app/types';
 import { Field } from './Field';
 
 interface NodeInspectorProps {

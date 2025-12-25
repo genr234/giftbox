@@ -12,6 +12,7 @@ export interface Hotspot {
     height: number;
     hoverHint?: string;
     onClickResult?: string;
+    showLetter?: boolean;
 }
 
 export interface Position {

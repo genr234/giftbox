@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { Scene } from '@/app/components/VisualNovel';
+import { Scene } from '@/components/VisualNovel';
 
 interface UseVisualNovelOptions {
     scenes: Scene[];
