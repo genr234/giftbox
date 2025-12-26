@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { GlassCard } from "@/components/GlassCard";
+import { GamePanel, GameButton, GameBadge, GameProgressBar, GameSlot } from "@/components/GamePanel";
 
 interface Product {
     id: string;
@@ -169,20 +169,20 @@ const PRODUCTS: Product[] = [
 ];
 
 const COMBOS: { products: string[]; bonus: number; name: string }[] = [
-    { products: ["latte", "croissant"], bonus: 3, name: "☕ Parisian Morning" },
-    { products: ["hotchoc", "cake"], bonus: 4, name: "🍫 Indulgent Treat" },
-    { products: ["tea", "scone"], bonus: 3, name: "🫖 Afternoon Tea" },
-    { products: ["espresso", "mystery"], bonus: 5, name: "📕 Detective's Break" },
-    { products: ["chai", "romance"], bonus: 5, name: "💕 Cozy Romance" },
-    { products: ["matcha", "selfhelp"], bonus: 5, name: "🧘 Mindful Moment" },
-    { products: ["cappuccino", "cinnamon"], bonus: 3, name: "🍥 Sweet Start" },
-    { products: ["hotchoc", "childrens"], bonus: 4, name: "📚 Storytime Special" },
-    { products: ["latte", "avotoast"], bonus: 4, name: "🥑 Brunch Goals" },
-    { products: ["candle", "poetry"], bonus: 6, name: "✨ Cozy Night In" },
-    { products: ["journal", "bookmark"], bonus: 4, name: "📝 Writer's Kit" },
-    { products: ["mug", "tea", "mystery"], bonus: 7, name: "🕵️ Rainy Day Bundle" },
-    { products: ["soup", "classic"], bonus: 5, name: "📖 Comfort Combo" },
-    { products: ["fantasy", "matcha"], bonus: 5, name: "🐉 Adventure Awaits" },
+    { products: ["latte", "croissant"], bonus: 3, name: "Parisian Morning" },
+    { products: ["hotchoc", "cake"], bonus: 4, name: "Indulgent Treat" },
+    { products: ["tea", "scone"], bonus: 3, name: "Afternoon Tea" },
+    { products: ["espresso", "mystery"], bonus: 5, name: "Detective's Break" },
+    { products: ["chai", "romance"], bonus: 5, name: "Cozy Romance" },
+    { products: ["matcha", "selfhelp"], bonus: 5, name: "Mindful Moment" },
+    { products: ["cappuccino", "cinnamon"], bonus: 3, name: "Sweet Start" },
+    { products: ["hotchoc", "childrens"], bonus: 4, name: "Storytime Special" },
+    { products: ["latte", "avotoast"], bonus: 4, name: "Brunch Goals" },
+    { products: ["candle", "poetry"], bonus: 6, name: "Cozy Night In" },
+    { products: ["journal", "bookmark"], bonus: 4, name: "Writer's Kit" },
+    { products: ["mug", "tea", "mystery"], bonus: 7, name: "Rainy Day Bundle" },
+    { products: ["soup", "classic"], bonus: 5, name: "Comfort Combo" },
+    { products: ["fantasy", "matcha"], bonus: 5, name: "Adventure Awaits" },
 ];
 
 const CUSTOMER_AVATARS = ["👩", "👨", "👵", "👴", "🧑", "👩‍🦰", "👨‍🦱", "👩‍🦳", "👨‍🦲", "🧔", "👱‍♀️", "👱", "🧑‍🎓", "👩‍💻", "👨‍🎨"];
@@ -300,6 +300,29 @@ const REQUEST_TEMPLATES: Omit<CustomerRequest, 'budget'>[] = [
     { type: "regular", text: "My regular order, if you remember...", validProducts: [], perfectProducts: [] },
 ];
 
+const BOOK_CLUB_REQUESTS: Omit<CustomerRequest, 'budget'>[] = [
+    { type: "specific", text: "We're discussing mysteries this month. Got any good ones?", validProducts: ["mystery"], perfectProducts: ["mystery"] },
+    { type: "specific", text: "Our book club needs romance novels for next meeting.", validProducts: ["romance"], perfectProducts: ["romance"] },
+    { type: "vague", text: "Something for our book club gathering tonight?", validProducts: ["mystery", "romance", "fantasy", "classic", "tea", "cake"], perfectProducts: ["mystery", "cake"] },
+    { type: "vague", text: "We're having a book club session and need snacks!", validProducts: ["cake", "tea", "muffin", "scone"], perfectProducts: ["cake", "tea"] },
+    { type: "recommendation", text: "What would you recommend for a book club?", validProducts: [], perfectProducts: [] },
+];
+
+const POETRY_NIGHT_REQUESTS: Omit<CustomerRequest, 'budget'>[] = [
+    { type: "specific", text: "I'm performing poetry tonight. Got any tea?", validProducts: ["tea"], perfectProducts: ["tea"] },
+    { type: "specific", text: "Do you have poetry books for reference?", validProducts: ["poetry"], perfectProducts: ["poetry"] },
+    { type: "vague", text: "Something inspiring for tonight's poetry event?", validProducts: ["poetry", "journal", "espresso", "tea", "candle"], perfectProducts: ["poetry", "tea"] },
+    { type: "vague", text: "I need something for creative fuel during open mic.", validProducts: ["espresso", "latte", "matcha", "journal"], perfectProducts: ["espresso", "journal"] },
+    { type: "recommendation", text: "What would inspire a poet like me?", validProducts: [], perfectProducts: [] },
+];
+
+const AUTHOR_SIGNING_REQUESTS: Omit<CustomerRequest, 'budget'>[] = [
+    { type: "specific", text: "I'm here for the author signing! Got the book?", validProducts: ["classic", "romance", "mystery", "fantasy"], perfectProducts: ["fantasy"] },
+    { type: "vague", text: "I want to get a book signed. What's popular here?", validProducts: ["mystery", "romance", "fantasy", "classic"], perfectProducts: ["mystery", "fantasy"] },
+    { type: "vague", text: "Perfect time for a new book! Any recommendations for signing?", validProducts: ["classic", "romance", "mystery", "fantasy"], perfectProducts: ["classic"] },
+    { type: "recommendation", text: "Which book should I get signed today?", validProducts: [], perfectProducts: [] },
+];
+
 const DILEMMA_TEMPLATES: Omit<DilemmaEvent, 'id' | 'choiceEffects'>[] = [
     {
         customer: "🧒",
@@ -404,105 +427,105 @@ const DILEMMA_TEMPLATES: Omit<DilemmaEvent, 'id' | 'choiceEffects'>[] = [
 ];
 
 const INITIAL_UPGRADES: Upgrade[] = [
-    { id: "bookshelf1", name: "Extra Bookshelf", description: "Display more books", cost: 100, purchased: false, effect: "shelf", emoji: "📚" },
-    { id: "bookshelf2", name: "Cozy Display Case", description: "Even more display space", cost: 200, purchased: false, effect: "shelf", emoji: "🗄️" },
+    { id: "bookshelf1", name: "Extra Bookshelf", description: "Display more books", cost: 100, purchased: false, effect: "shelf", emoji: "" },
+    { id: "bookshelf2", name: "Cozy Display Case", description: "Even more display space", cost: 200, purchased: false, effect: "shelf", emoji: "" },
 
-    { id: "espresso-pro", name: "Pro Espresso Machine", description: "Make drinks 30% faster", cost: 150, purchased: false, effect: "speed", emoji: "☕" },
-    { id: "speed2", name: "Double Grinder", description: "Serve 50% faster", cost: 300, purchased: false, effect: "speed", emoji: "⚡" },
+    { id: "espresso-pro", name: "Pro Espresso Machine", description: "Make drinks 30% faster", cost: 150, purchased: false, effect: "speed", emoji: "" },
+    { id: "speed2", name: "Double Grinder", description: "Serve 50% faster", cost: 300, purchased: false, effect: "speed", emoji: "" },
 
-    { id: "pastry-case", name: "Pastry Display Case", description: "Pastries stay fresh 50% longer", cost: 180, purchased: false, effect: "freshness", emoji: "🥐" },
-    { id: "fridge", name: "Better Refrigeration", description: "All perishables last longer", cost: 200, purchased: false, effect: "freshness", emoji: "❄️" },
+    { id: "pastry-case", name: "Pastry Display Case", description: "Pastries stay fresh 50% longer", cost: 180, purchased: false, effect: "freshness", emoji: "" },
+    { id: "fridge", name: "Better Refrigeration", description: "All perishables last longer", cost: 200, purchased: false, effect: "freshness", emoji: "" },
 
-    { id: "fireplace", name: "Cozy Fireplace", description: "20% more customers, longer stays", cost: 250, purchased: false, effect: "attraction", emoji: "🔥" },
-    { id: "reading-nook", name: "Reading Nook", description: "Bookworms stay & buy more", cost: 300, purchased: false, effect: "attraction", emoji: "🛋️" },
-    { id: "fairy-lights", name: "Fairy Lights", description: "Instagram-worthy! 15% more visitors", cost: 120, purchased: false, effect: "attraction", emoji: "✨" },
-    { id: "plants", name: "Plant Corner", description: "Cozy vibes, happier customers", cost: 100, purchased: false, effect: "attraction", emoji: "🪴" },
+    { id: "fireplace", name: "Cozy Fireplace", description: "20% more customers, longer stays", cost: 250, purchased: false, effect: "attraction", emoji: "" },
+    { id: "reading-nook", name: "Reading Nook", description: "Bookworms stay & buy more", cost: 300, purchased: false, effect: "attraction", emoji: "" },
+    { id: "fairy-lights", name: "Fairy Lights", description: "Instagram-worthy! 15% more visitors", cost: 120, purchased: false, effect: "attraction", emoji: "" },
+    { id: "plants", name: "Plant Corner", description: "Cozy vibes, happier customers", cost: 100, purchased: false, effect: "attraction", emoji: "" },
 
-    { id: "cat", name: "Adopt Shop Cat", description: "Customers love Hemingway! +happiness", cost: 150, purchased: false, effect: "happiness", emoji: "🐱" },
-    { id: "wifi", name: "Fast WiFi", description: "Students & writers love it", cost: 80, purchased: false, effect: "attraction", emoji: "📶" },
-    { id: "music", name: "Vinyl Player", description: "Better ambiance, calmer customers", cost: 120, purchased: false, effect: "patience", emoji: "🎵" },
+    { id: "cat", name: "Adopt Shop Cat", description: "Customers love Hemingway! +happiness", cost: 150, purchased: false, effect: "happiness", emoji: "" },
+    { id: "wifi", name: "Fast WiFi", description: "Students & writers love it", cost: 80, purchased: false, effect: "attraction", emoji: "" },
+    { id: "music", name: "Vinyl Player", description: "Better ambiance, calmer customers", cost: 120, purchased: false, effect: "patience", emoji: "" },
 
-    { id: "storage", name: "Back Room Storage", description: "Hold 50% more stock", cost: 150, purchased: false, effect: "storage", emoji: "📦" },
-    { id: "patio", name: "Garden Patio", description: "Outdoor seating, more capacity", cost: 400, purchased: false, effect: "capacity", emoji: "🌿" },
+    { id: "storage", name: "Back Room Storage", description: "Hold 50% more stock", cost: 150, purchased: false, effect: "storage", emoji: "" },
+    { id: "patio", name: "Garden Patio", description: "Outdoor seating, more capacity", cost: 400, purchased: false, effect: "capacity", emoji: "" },
 
-    { id: "bookclub", name: "Book Club Hosting", description: "Weekly book clubs visit", cost: 200, purchased: false, effect: "bookclub", emoji: "📖" },
-    { id: "signing-table", name: "Author Signing Table", description: "Host author events", cost: 350, purchased: false, effect: "events", emoji: "✍️" },
-    { id: "poetry-corner", name: "Poetry Corner", description: "Open mic nights attract artists", cost: 180, purchased: false, effect: "events", emoji: "🎭" },
+    { id: "bookclub", name: "Book Club Hosting", description: "Weekly book clubs visit", cost: 200, purchased: false, effect: "bookclub", emoji: "" },
+    { id: "signing-table", name: "Author Signing Table", description: "Host author events", cost: 350, purchased: false, effect: "events", emoji: "" },
+    { id: "poetry-corner", name: "Poetry Corner", description: "Open mic nights attract artists", cost: 180, purchased: false, effect: "events", emoji: "" },
 ];
 
 const ACHIEVEMENTS: Achievement[] = [
-    { id: "first-sale", name: "First Customer!", description: "Make your first sale", unlocked: false, emoji: "☕" },
-    { id: "100-sales", name: "Hundred Stories", description: "Serve 100 customers", unlocked: false, emoji: "💯" },
-    { id: "1000-sales", name: "Community Pillar", description: "Serve 1000 customers", unlocked: false, emoji: "🏛️" },
-    { id: "1000-money", name: "Thriving Business", description: "Have $1000 at once", unlocked: false, emoji: "💰" },
-    { id: "5000-money", name: "Expansion Dreams", description: "Have $5000 at once", unlocked: false, emoji: "🌟" },
+    { id: "first-sale", name: "First Customer!", description: "Make your first sale", unlocked: false, emoji: "" },
+    { id: "100-sales", name: "Hundred Stories", description: "Serve 100 customers", unlocked: false, emoji: "" },
+    { id: "1000-sales", name: "Community Pillar", description: "Serve 1000 customers", unlocked: false, emoji: "" },
+    { id: "1000-money", name: "Thriving Business", description: "Have $1000 at once", unlocked: false, emoji: "" },
+    { id: "5000-money", name: "Expansion Dreams", description: "Have $5000 at once", unlocked: false, emoji: "" },
 
-    { id: "first-combo", name: "Perfect Pairing", description: "Sell your first combo", unlocked: false, emoji: "🤝" },
-    { id: "combo-master", name: "Pairing Expert", description: "Sell 25 combos", unlocked: false, emoji: "🎯" },
-    { id: "all-combos", name: "Combo Connoisseur", description: "Trigger every combo type", unlocked: false, emoji: "👨‍🍳" },
+    { id: "first-combo", name: "Perfect Pairing", description: "Sell your first combo", unlocked: false, emoji: "" },
+    { id: "combo-master", name: "Pairing Expert", description: "Sell 25 combos", unlocked: false, emoji: "" },
+    { id: "all-combos", name: "Combo Connoisseur", description: "Trigger every combo type", unlocked: false, emoji: "" },
 
-    { id: "5-star", name: "Five Star Review", description: "Get 5-star average rating", unlocked: false, emoji: "⭐" },
-    { id: "beloved", name: "Neighborhood Gem", description: "Reach max reputation", unlocked: false, emoji: "❤️" },
+    { id: "5-star", name: "Five Star Review", description: "Get 5-star average rating", unlocked: false, emoji: "" },
+    { id: "beloved", name: "Neighborhood Gem", description: "Reach max reputation", unlocked: false, emoji: "" },
 
-    { id: "first-regular", name: "A Familiar Face", description: "Get your first regular", unlocked: false, emoji: "👋" },
-    { id: "5-regulars", name: "The Usual Crowd", description: "Have 5 regular customers", unlocked: false, emoji: "👥" },
-    { id: "best-friend", name: "Best Customer", description: "Max relationship with a regular", unlocked: false, emoji: "🤗" },
+    { id: "first-regular", name: "A Familiar Face", description: "Get your first regular", unlocked: false, emoji: "" },
+    { id: "5-regulars", name: "The Usual Crowd", description: "Have 5 regular customers", unlocked: false, emoji: "" },
+    { id: "best-friend", name: "Best Customer", description: "Max relationship with a regular", unlocked: false, emoji: "" },
 
-    { id: "first-book", name: "Book Sold!", description: "Sell your first book", unlocked: false, emoji: "📚" },
-    { id: "100-books", name: "Little Library", description: "Sell 100 books", unlocked: false, emoji: "📖" },
-    { id: "all-genres", name: "Well-Read", description: "Sell every book genre", unlocked: false, emoji: "🎓" },
-    { id: "first-signed", name: "Autograph Hunter", description: "Sell your first signed book", unlocked: false, emoji: "✍️" },
-    { id: "10-signed", name: "Rare Finds", description: "Sell 10 signed books", unlocked: false, emoji: "💎" },
-    { id: "beloved-book", name: "Passed Down", description: "Sell a beloved book with history", unlocked: false, emoji: "💝" },
-    { id: "book-whisperer", name: "Book Whisperer", description: "Make 25 successful book recommendations", unlocked: false, emoji: "🔮" },
-    { id: "mint-collector", name: "Mint Collector", description: "Sell 10 mint condition books", unlocked: false, emoji: "✨" },
+    { id: "first-book", name: "Book Sold!", description: "Sell your first book", unlocked: false, emoji: "" },
+    { id: "100-books", name: "Little Library", description: "Sell 100 books", unlocked: false, emoji: "" },
+    { id: "all-genres", name: "Well-Read", description: "Sell every book genre", unlocked: false, emoji: "" },
+    { id: "first-signed", name: "Autograph Hunter", description: "Sell your first signed book", unlocked: false, emoji: "" },
+    { id: "10-signed", name: "Rare Finds", description: "Sell 10 signed books", unlocked: false, emoji: "" },
+    { id: "beloved-book", name: "Passed Down", description: "Sell a beloved book with history", unlocked: false, emoji: "" },
+    { id: "book-whisperer", name: "Book Whisperer", description: "Make 25 successful book recommendations", unlocked: false, emoji: "" },
+    { id: "mint-collector", name: "Mint Collector", description: "Sell 10 mint condition books", unlocked: false, emoji: "" },
 
-    { id: "week-1", name: "First Week", description: "Survive 7 days", unlocked: false, emoji: "📅" },
-    { id: "month-1", name: "One Month In", description: "Reach day 30", unlocked: false, emoji: "📆" },
-    { id: "year-1", name: "Anniversary", description: "Reach day 365", unlocked: false, emoji: "🎂" },
+    { id: "week-1", name: "First Week", description: "Survive 7 days", unlocked: false, emoji: "" },
+    { id: "month-1", name: "One Month In", description: "Reach day 30", unlocked: false, emoji: "" },
+    { id: "year-1", name: "Anniversary", description: "Reach day 365", unlocked: false, emoji: "" },
 
-    { id: "cozy-master", name: "Cozy Master", description: "Buy all ambiance upgrades", unlocked: false, emoji: "🏠" },
-    { id: "cat-person", name: "Cat Person", description: "Pet Hemingway 50 times", unlocked: false, emoji: "🐱" },
-    { id: "rainy-day", name: "Rainy Day Magic", description: "Have a perfect day during rain", unlocked: false, emoji: "🌧️" },
-    { id: "book-club", name: "Club Host", description: "Host 10 book clubs", unlocked: false, emoji: "📕" },
-    { id: "kind-heart", name: "Kind Heart", description: "Choose compassion in 5 dilemmas", unlocked: false, emoji: "💝" },
-    { id: "author-event", name: "Author's Friend", description: "Host an author signing", unlocked: false, emoji: "✍️" },
-    { id: "night-owl", name: "Night Owl", description: "Stay open past midnight", unlocked: false, emoji: "🦉" },
+    { id: "cozy-master", name: "Cozy Master", description: "Buy all ambiance upgrades", unlocked: false, emoji: "" },
+    { id: "cat-person", name: "Cat Person", description: "Pet Hemingway 50 times", unlocked: false, emoji: "" },
+    { id: "rainy-day", name: "Rainy Day Magic", description: "Have a perfect day during rain", unlocked: false, emoji: "" },
+    { id: "book-club", name: "Club Host", description: "Host 10 book clubs", unlocked: false, emoji: "" },
+    { id: "kind-heart", name: "Kind Heart", description: "Choose compassion in 5 dilemmas", unlocked: false, emoji: "" },
+    { id: "author-event", name: "Author's Friend", description: "Host an author signing", unlocked: false, emoji: "" },
+    { id: "night-owl", name: "Night Owl", description: "Stay open past midnight", unlocked: false, emoji: "" },
 ];
 
 const SPECIAL_EVENTS = [
     {
         id: "book-club",
         type: "book-club" as const,
-        message: "📚 Book Club Night! A group arrives to discuss this month's mystery...",
+        message: "Book Club Night! A group arrives to discuss this month's mystery...",
         duration: 3,
         active: false
     },
     {
         id: "poetry-night",
         type: "poetry-night" as const,
-        message: "🎭 Open Mic Poetry Night! Artists and dreamers fill every seat...",
+        message: "Open Mic Poetry Night! Artists and dreamers fill every seat...",
         duration: 2,
         active: false
     },
     {
         id: "author-signing",
         type: "author-signing" as const,
-        message: "✍️ Author Signing! A local writer draws a crowd for their new book...",
+        message: "Author Signing! A local writer draws a crowd for their new book...",
         duration: 4,
         active: false
     },
     {
         id: "rainy-rush",
         type: "rainy-day-rush" as const,
-        message: "🌧️ Rainy Day Rush! Everyone seeks shelter and hot drinks...",
+        message: "Rainy Day Rush! Everyone seeks shelter and hot drinks...",
         duration: 3,
         active: false
     },
     {
         id: "wifi-out",
         type: "wifi-outage" as const,
-        message: "📵 WiFi Outage! Students panic, but book sales go up...",
+        message: "WiFi Outage! Students panic, but book sales go up...",
         duration: 2,
         active: false
     },
@@ -1454,9 +1477,9 @@ export default function ShopGame() {
                 notify(eventBonusMessage, "success");
             }
             if (comboBonus > 0) {
-                notify(`🎯 ${comboName}! +$${finalTotal}`, "success");
+                notify(`${comboName}! +$${finalTotal}`, "success");
             } else if (eventBonus === 0) {
-                notify(`💵 Sale! +$${finalTotal}`, "success");
+                notify(`Sale! +$${finalTotal}`, "success");
             }
 
             const rating = activeCustomer.satisfaction > 70 ? 4 + Math.random() :
@@ -1488,7 +1511,7 @@ export default function ShopGame() {
                         lastVisit: day,
                         totalSpent: finalTotal
                     }]);
-                    notify(`⭐ ${name} is now a regular!`, "success");
+                    notify(`${name} is now a regular!`, "success");
                 }
             }
 
@@ -1726,7 +1749,7 @@ export default function ShopGame() {
                                 customer.state = "angry-leaving";
                                 const who = customer.isRegular ? "A regular customer" :
                                            customer.type === "vip" ? "A VIP" : "A customer";
-                                notify(`😤 ${who} got tired of waiting and left!`, "warning");
+                                notify(`${who} got tired of waiting and left!`, "warning");
 
                                 if (customer.isRegular && customer.regularId) {
                                     setRegulars(r => r.map(reg =>
@@ -1762,14 +1785,14 @@ export default function ShopGame() {
                             if (customer.x > 400) {
                                 const stolenTotal = customer.cart.reduce((sum, item) => sum + item.price, 0);
                                 setStolenValue(v => v + stolenTotal);
-                                notify(`🚨 Thief got away with $${stolenTotal}!`, "danger");
+                                notify(`Thief got away with $${stolenTotal}!`, "danger");
                                 continue;
                             }
                             if (hasCamera && Math.random() < 0.05) {
                                 customer.caught = true;
                                 customer.state = "angry-leaving";
                                 setThievesCaught(t => t + 1);
-                                notify("📹 Security caught a shoplifter!", "success");
+                                notify("Security caught a shoplifter!", "success");
                             }
                             break;
                     }
@@ -1798,7 +1821,7 @@ export default function ShopGame() {
         setCustomers(prev => prev.map(c => {
             if (c.id === thiefId && c.state === "stealing") {
                 setThievesCaught(t => t + 1);
-                notify("🚔 You caught the thief!", "success");
+                notify("You caught the thief!", "success");
                 return { ...c, caught: true, state: "angry-leaving" as const, cart: [] };
             }
             return c;
@@ -1846,9 +1869,9 @@ export default function ShopGame() {
             };
 
             if (isSigned) {
-                notify(`✨ Signed copy of ${product.name}!`, "success");
+                notify(`Signed copy of ${product.name}!`, "success");
             } else if (condition === "beloved") {
-                notify(`💝 This ${product.name} is full of memories!`, "success");
+                notify(`This ${product.name} is full of memories!`, "success");
             }
         }
 
@@ -1885,7 +1908,7 @@ export default function ShopGame() {
 
         const product = PRODUCTS.find(p => p.id === selectedProduct);
         if (product?.category !== "books") {
-            notify("Only books go in the Book Corner! 📚", "warning");
+            notify("Only books go in the Book Corner!", "warning");
             return;
         }
 
@@ -2044,7 +2067,7 @@ export default function ShopGame() {
         const currentStorageCount = Object.values(storage).reduce((a, b) => a + b.quantity, 0);
         const cartQuantity = Object.values(cart).reduce((a, b) => a + b, 0);
         if (currentStorageCount + cartQuantity > maxStorageCapacity) {
-            notify(`📦 Storage full! Max capacity: ${maxStorageCapacity}`, "warning");
+            notify(`Storage full! Max capacity: ${maxStorageCapacity}`, "warning");
             return;
         }
 
@@ -2195,7 +2218,7 @@ export default function ShopGame() {
             accent: 'from-amber-400/80 to-orange-500/80',
             text: 'text-amber-900',
             glow: 'shadow-amber-500/20',
-            image: '/backgrounds/shop_day.jpg',
+            image: './backgrounds/shop_day.jpg',
             overlay: 'bg-gradient-to-b from-amber-900/40 via-amber-800/20 to-amber-900/50',
             cardBg: 'bg-amber-950/60',
         },
@@ -2203,7 +2226,7 @@ export default function ShopGame() {
             accent: 'from-sky-400/80 to-blue-500/80',
             text: 'text-blue-900',
             glow: 'shadow-blue-500/20',
-            image: '/backgrounds/shop_afternoon.jpg',
+            image: './backgrounds/shop_afternoon.jpg',
             overlay: 'bg-gradient-to-b from-slate-900/40 via-slate-800/20 to-slate-900/50',
             cardBg: 'bg-slate-950/60',
         },
@@ -2211,7 +2234,7 @@ export default function ShopGame() {
             accent: 'from-purple-500/80 to-indigo-600/80',
             text: 'text-purple-100',
             glow: 'shadow-purple-500/30',
-            image: '/backgrounds/shop_evening.jpg',
+            image: './backgrounds/shop_evening.jpg',
             overlay: 'bg-gradient-to-b from-indigo-950/30 via-purple-900/10 to-indigo-950/40',
             cardBg: 'bg-indigo-950/50',
         },
@@ -2228,18 +2251,18 @@ export default function ShopGame() {
             <div className="relative z-10 flex flex-col gap-4 p-4 h-full">
             {newAchievement && (
                 <div className="fixed top-1/4 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
-                    <GlassCard className="px-6 py-4 text-center animate-bounce">
+                    <GamePanel className="px-6 py-4 text-center animate-bounce">
                         <div className="text-4xl mb-2">{newAchievement.emoji}</div>
-                        <div className="font-bold text-white">Achievement Unlocked!</div>
-                        <div className="text-white/80">{newAchievement.name}</div>
-                    </GlassCard>
+                        <div className="font-bold text-amber-100">Achievement Unlocked!</div>
+                        <div className="text-amber-200/80">{newAchievement.name}</div>
+                    </GamePanel>
                 </div>
             )}
 
             <div className="flex gap-4 shrink-0 h-24">
-                <GlassCard className="flex-[2] p-4 flex justify-between items-center">
+                <GamePanel className="flex-[2] p-4 flex justify-between items-center">
                     <div>
-                        <h1 className="text-2xl font-bold text-white drop-shadow flex items-center gap-3">
+                        <h1 className="text-2xl font-bold text-amber-100 drop-shadow flex items-center gap-3">
                             Day {day}
                             {currentEvent && (
                                 <span className={`text-sm bg-gradient-to-r ${
@@ -2248,31 +2271,29 @@ export default function ShopGame() {
                                     currentEvent.type === "author-signing" ? "from-yellow-400/80 to-amber-500/80" :
                                     timeColors.accent
                                 } px-3 py-1 rounded-full animate-pulse`}>
-                                    {currentEvent.type === "rush-hour" ? "🏃 RUSH HOUR" :
-                                        currentEvent.type === "supplier-deal" ? "📦 SUPPLIER SALE" :
-                                        currentEvent.type === "viral-review" ? "📱 VIRAL ON SOCIALS" :
-                                        currentEvent.type === "health-inspector" ? "👨‍⚕️ INSPECTION" :
-                                        currentEvent.type === "book-club" ? "📖 BOOK CLUB" :
-                                        currentEvent.type === "poetry-night" ? "🎭 POETRY NIGHT" :
-                                        currentEvent.type === "author-signing" ? "✍️ AUTHOR SIGNING" : ""}
+                                    {currentEvent.type === "rush-hour" ? "RUSH HOUR" :
+                                        currentEvent.type === "supplier-deal" ? "SUPPLIER SALE" :
+                                        currentEvent.type === "viral-review" ? "VIRAL ON SOCIALS" :
+                                        currentEvent.type === "health-inspector" ? "INSPECTION" :
+                                        currentEvent.type === "book-club" ? "BOOK CLUB" :
+                                        currentEvent.type === "poetry-night" ? "POETRY NIGHT" :
+                                        currentEvent.type === "author-signing" ? "AUTHOR SIGNING" : ""}
                                 </span>
                             )}
                         </h1>
-                        <div className="text-white/80 mt-1 flex items-center gap-4">
+                        <div className="text-amber-200/80 mt-1 flex items-center gap-4">
                             <span>{isPrepTime ? "Preparation Time" : timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1)}</span>
-                            {isRushHour && !currentEvent && !isPrepTime && <span className="text-orange-300 font-bold">🏃 Rush Hour!</span>}
+                            {isRushHour && !currentEvent && !isPrepTime && <span className="text-orange-300 font-bold">Rush Hour!</span>}
                         </div>
                     </div>
 
                     <div className="flex-1 mx-8">
                         {isPrepTime ? (
-                            <div className="p-2 bg-blue-500/20 rounded-lg border border-blue-400/30 text-center">
-                                <span className="text-blue-300 text-sm font-medium">take your time to prepare!</span>
-                            </div>
+                            <></>
                         ) : (
                             <div className="flex items-center gap-3">
-                                <span className="text-xl">🌅</span>
-                                <div className="flex-1 h-3 bg-white/20 rounded-full overflow-hidden relative">
+                                <span className="text-xs text-amber-200/60 uppercase font-bold">AM</span>
+                                <div className="flex-1 h-3 bg-[#2a2833] rounded-full overflow-hidden relative border border-[#3d3a4a]">
                                     <div
                                         className={`h-full transition-all bg-gradient-to-r ${
                                             isRushHour ? "from-red-400 to-orange-400" : "from-yellow-400 via-orange-400 to-purple-500"
@@ -2280,77 +2301,80 @@ export default function ShopGame() {
                                         style={{ width: `${timeOfDay}%` }}
                                     />
                                 </div>
-                                <span className="text-xl">🌙</span>
-                                <button
+                                <span className="text-xs text-amber-200/60 uppercase font-bold">PM</span>
+                                <GameButton
                                     onClick={() => setIsPaused(!isPaused)}
-                                    className="text-sm px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 text-white transition"
+                                    size="sm"
+                                    variant="default"
                                 >
-                                    {isPaused ? "▶️" : "⏸️"}
-                                </button>
+                                    {isPaused ? "PLAY" : "PAUSE"}
+                                </GameButton>
                             </div>
                         )}
                     </div>
 
                     <div className="text-right min-w-[150px]">
-                        <div className="text-3xl font-bold text-green-400 drop-shadow">${money}</div>
+                        <div className="text-3xl font-bold text-emerald-400 drop-shadow">${money}</div>
                         <div className="flex justify-end gap-3 text-sm mt-1">
                             <span className="text-yellow-400">Rep: {reputation}</span>
-                            <span className="text-white/60">Rent: ${rent}</span>
+                            <span className="text-amber-200/60">Rent: ${rent}</span>
                         </div>
                         {debt > 0 && <div className="text-xs text-red-400 font-bold mt-1">Debt: ${debt}</div>}
                     </div>
-                </GlassCard>
+                </GamePanel>
 
-                <GlassCard className="flex-1 p-4 flex flex-col justify-center">
+                <GamePanel className="flex-1 p-4 flex flex-col justify-center">
                     <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                         <div className="flex justify-between">
-                            <span className="text-white/60">Sales</span>
-                            <span className="text-green-400 font-bold">${dailySales}</span>
+                            <span className="text-amber-200/60">Sales</span>
+                            <span className="text-emerald-400 font-bold">${dailySales}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-white/60">Visitors</span>
-                            <span className="text-white font-bold">{dailyCustomers}</span>
+                            <span className="text-amber-200/60">Visitors</span>
+                            <span className="text-amber-100 font-bold">{dailyCustomers}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-white/60">Combos</span>
+                            <span className="text-amber-200/60">Combos</span>
                             <span className="text-purple-400 font-bold">{combosTriggered}</span>
                         </div>
-                        <div className="flex justify-between cursor-pointer hover:text-white transition" onClick={() => setShowReviews(true)}>
-                            <span className="text-white/60">Rating</span>
+                        <div className="flex justify-between cursor-pointer hover:text-amber-100 transition" onClick={() => setShowReviews(true)}>
+                            <span className="text-amber-200/60">Rating</span>
                             <span className="text-yellow-400 font-bold">{averageRating.toFixed(1)} ★</span>
                         </div>
                     </div>
 
                     {(speedBonus > 0 || freshnessBonus > 0 || customerBonus > 0 || patienceBonus > 0 || hasCat) && (
-                        <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-white/10">
-                            {speedBonus > 0 && <span className="text-xs bg-blue-500/30 text-blue-300 px-1.5 py-0.5 rounded">⚡+{Math.round(speedBonus * 100)}%</span>}
-                            {freshnessBonus > 0 && <span className="text-xs bg-cyan-500/30 text-cyan-300 px-1.5 py-0.5 rounded">❄️+{Math.round(freshnessBonus * 100)}%</span>}
-                            {customerBonus > 0 && <span className="text-xs bg-green-500/30 text-green-300 px-1.5 py-0.5 rounded">👥+{Math.round(customerBonus * 100)}%</span>}
-                            {patienceBonus > 0 && <span className="text-xs bg-purple-500/30 text-purple-300 px-1.5 py-0.5 rounded">😌+{Math.round(patienceBonus * 100)}%</span>}
-                            {hasCat && <span className="text-xs bg-orange-500/30 text-orange-300 px-1.5 py-0.5 rounded">🐱</span>}
+                        <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-[#3d3a4a]">
+                            {speedBonus > 0 && <span className="text-xs bg-blue-900/40 text-blue-300 px-1.5 py-0.5 rounded border border-blue-700/50">SPD +{Math.round(speedBonus * 100)}%</span>}
+                            {freshnessBonus > 0 && <span className="text-xs bg-cyan-900/40 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-700/50">FRESH +{Math.round(freshnessBonus * 100)}%</span>}
+                            {customerBonus > 0 && <span className="text-xs bg-green-900/40 text-green-300 px-1.5 py-0.5 rounded border border-green-700/50">CUST +{Math.round(customerBonus * 100)}%</span>}
+                            {patienceBonus > 0 && <span className="text-xs bg-purple-900/40 text-purple-300 px-1.5 py-0.5 rounded border border-purple-700/50">PAT +{Math.round(patienceBonus * 100)}%</span>}
+                            {hasCat && <span className="text-xs bg-orange-900/40 text-orange-300 px-1.5 py-0.5 rounded border border-orange-700/50">CAT</span>}
                         </div>
                     )}
-                </GlassCard>
+                </GamePanel>
             </div>
 
             <div className="flex-1 flex gap-4 min-h-0">
 
                 <div className="flex-[3] flex flex-col gap-4 min-w-0">
 
-                    <GlassCard dark className="h-40 relative overflow-hidden shrink-0">
-                        <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                        <div className="absolute bottom-2 left-3 text-xs opacity-60 font-mono">🚪 ENTRANCE</div>
-                        <div className="absolute bottom-2 right-3 text-xs opacity-60 font-mono">🛒 COUNTER</div>
+                    <GamePanel variant="dark" className="h-40 relative overflow-hidden shrink-0">
+                        <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+                        <div className="absolute bottom-2 left-3 text-xs opacity-60 font-mono text-amber-200">ENTRANCE</div>
+                        <div className="absolute bottom-2 right-3 text-xs opacity-60 font-mono text-amber-200">COUNTER</div>
 
                         {waitingCustomer && !activeCustomer && (
                             <div className="absolute top-3 right-4 z-10">
-                                <button
+                                <GameButton
                                     onClick={() => startInteraction(waitingCustomer)}
-                                    className={`flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full font-bold shadow-lg animate-pulse hover:scale-105 transition`}
+                                    variant="success"
+                                    size="lg"
+                                    className="animate-pulse flex items-center gap-2"
                                 >
-                                    <span>🔔 Customer Waiting!</span>
+                                    <span>Customer Waiting!</span>
                                     <span className="bg-white/20 px-2 rounded text-sm">Serve</span>
-                                </button>
+                                </GameButton>
                             </div>
                         )}
 
@@ -2373,12 +2397,12 @@ export default function ShopGame() {
                             >
                                 {c.state === "stealing" && (
                                     <span className="text-xs absolute -top-8 bg-red-500 text-white px-2 py-1 rounded-full font-bold animate-bounce shadow-lg">
-                                        🚨 THIEF!
+                                        THIEF!
                                     </span>
                                 )}
                                 {c.state === "waiting-at-counter" && !activeCustomer && (
                                     <span className="text-xs absolute -top-8 bg-blue-500 text-white px-2 py-1 rounded-full font-bold animate-bounce shadow-lg">
-                                        💬 Hey!
+                                        Hey!
                                     </span>
                                 )}
                                 {c.isRegular && (
@@ -2398,13 +2422,13 @@ export default function ShopGame() {
                                 </div>
                             </div>
                         ))}
-                    </GlassCard>
+                    </GamePanel>
 
                     <div className="flex-1 flex gap-4 min-h-0">
-                        <GlassCard dark className="flex-[2] p-4 flex flex-col rounded-t-none border-t-0">
+                        <GamePanel variant="dark" className="flex-[2] p-4 flex flex-col rounded-t-none border-t-0">
                             <div className="flex justify-between items-center mb-3">
                                 <div className="text-lg font-bold text-white/90 flex items-center gap-2">
-                                    ☕ Café Shelves
+                                    Café Shelves
                                     <span className="text-sm font-normal text-white/50">({totalShelfItems} items)</span>
                                 </div>
                                 {!isOpen && <div className="text-sm font-bold text-red-400 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">CLOSED</div>}
@@ -2487,16 +2511,16 @@ export default function ShopGame() {
                                     );
                                 })}
                             </div>
-                        </GlassCard>
+                        </GamePanel>
 
-                        <GlassCard dark className="flex-1 p-4 flex flex-col border-2 border-amber-800/30 bg-gradient-to-br from-amber-900/20 to-stone-900/30">
+                        <GamePanel variant="dark" className="flex-1 p-4 flex flex-col border-2 border-amber-800/30 bg-gradient-to-br from-amber-900/20 to-stone-900/30">
                             <div className="flex justify-between items-center mb-3">
                                 <div className="text-lg font-bold text-amber-200/90 flex items-center gap-2">
-                                    📚 Book Corner
+                                    Book Corner
                                 </div>
                                 {selectedProduct && isBookProduct(selectedProduct) && (
                                     <span className="bg-amber-600/80 text-white text-sm px-3 py-1 rounded-full animate-pulse font-bold shadow-lg">
-                                        👇 Display Book
+                                        Display Book
                                     </span>
                                 )}
                             </div>
@@ -2550,13 +2574,13 @@ export default function ShopGame() {
                                     );
                                 })}
                             </div>
-                        </GlassCard>
+                        </GamePanel>
                     </div>
                 </div>
 
                 <div className="flex-1 flex flex-col gap-4 min-w-[300px]">
 
-                    <GlassCard className="flex-1 p-4 flex flex-col overflow-hidden min-h-[150px]">
+                    <GamePanel className="flex-1 p-4 flex flex-col overflow-hidden min-h-[150px]">
                         <div className="text-sm font-bold text-white/90 mb-2 flex items-center gap-2">
                             Activity Log
                         </div>
@@ -2576,10 +2600,10 @@ export default function ShopGame() {
                                 </div>
                             ))}
                         </div>
-                    </GlassCard>
+                    </GamePanel>
 
                     {Object.keys(storage).length > 0 && (
-                        <GlassCard className="shrink-0 p-3 max-h-[200px] flex flex-col">
+                        <GamePanel className="shrink-0 p-3 max-h-[200px] flex flex-col">
                             <div className="text-sm font-bold mb-2 text-white/90 flex justify-between items-center">
                                 <span>Quick Stock</span>
                                 {selectedProduct && (
@@ -2616,26 +2640,25 @@ export default function ShopGame() {
                                         })}
                                 </div>
                             </div>
-                        </GlassCard>
+                        </GamePanel>
                     )}
 
                     <div className="shrink-0">
                         {isPrepTime ? (
-                            <GlassCard className="p-6 text-center">
+                            <GamePanel className="p-6 text-center">
                                 <div className="mb-4">
-                                    <div className="text-4xl mb-2 animate-bounce">☕📚</div>
                                     <div className="text-white font-bold text-xl mb-1">Preparation Time</div>
                                     <div className="text-white/70 text-sm">
-                                        Stock shelves & set prices!
+                                        Stock shelves & get ready!
                                     </div>
                                 </div>
                                 <button
                                     onClick={openShop}
-                                    className="w-full bg-gradient-to-r from-green-400 to-emerald-600 text-white font-bold py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg animate-pulse text-lg"
+                                    className="w-full bg-gradient-to-r from-green-400 to-emerald-600 text-white font-bold py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg text-lg"
                                 >
                                     OPEN
                                 </button>
-                            </GlassCard>
+                            </GamePanel>
                         ) : (
                             <div className="grid grid-cols-2 gap-3">
                                 {[
@@ -2674,7 +2697,7 @@ export default function ShopGame() {
 
             {activeCustomer && (
                 <div className="fixed inset-0  backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-                    <GlassCard dark className="w-full max-w-2xl p-6 shadow-2xl border-2 border-white/20">
+                    <GamePanel variant="dark" className="w-full max-w-2xl p-6 shadow-2xl border-2 border-white/20">
                         <div className="flex gap-6">
                             <div className="w-1/3 flex flex-col items-center text-center border-r border-white/10 pr-6">
                                 <div className="text-8xl mb-4 drop-shadow-2xl animate-bounce-slow">{activeCustomer.avatar}</div>
@@ -2714,7 +2737,7 @@ export default function ShopGame() {
                                     {activeCustomer.currentResponse && (
                                         <div className={`mt-4 p-3 rounded-xl text-sm border ${
                                             activeCustomer.currentResponse.includes("😊") || activeCustomer.currentResponse.includes("🎉") 
-                                                ? "bg-green-500/20 border-green-500/30 text-green-100" 
+                                                ? "bg-green-500/20 border-green-500/30 text-green-100"
                                                 : activeCustomer.currentResponse.includes("😤") || activeCustomer.currentResponse.includes("😡")
                                                 ? "bg-red-500/20 border-red-500/30 text-red-100"
                                                 : "bg-blue-500/20 border-blue-500/30 text-blue-100"
@@ -2729,7 +2752,7 @@ export default function ShopGame() {
 
                                     {getUniqueStockedProductIds().length > 0 && (
                                         <div className="mb-4">
-                                            <div className="text-xs text-white/50 mb-1">☕ Café & Snacks</div>
+                                            <div className="text-xs text-white/50 mb-1">Caféé & Snacks</div>
                                             <div className="grid grid-cols-4 gap-2">
                                                 {getUniqueStockedProductIds().map(productId => {
                                                     const product = PRODUCTS.find(p => p.id === productId)!;
@@ -2763,7 +2786,7 @@ export default function ShopGame() {
 
                                     {getBookCornerBooks().length > 0 && (
                                         <div>
-                                            <div className="text-xs text-amber-400/70 mb-1">📚 Book Corner</div>
+                                            <div className="text-xs text-amber-400/70 mb-1">Book Corner</div>
                                             <div className="grid grid-cols-3 gap-2">
                                                 {getBookCornerBooks().map(({ productId, slot, index }) => {
                                                     const product = PRODUCTS.find(p => p.id === productId)!;
@@ -2861,13 +2884,13 @@ export default function ShopGame() {
                                 </div>
                             </div>
                         </div>
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {currentDilemma && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="w-full max-w-md p-6">
+                    <GamePanel className="w-full max-w-md p-6">
                         <div className="text-center mb-6">
                             <div className="text-6xl mb-4">{currentDilemma.customer}</div>
                             {currentDilemma.customerName && (
@@ -2902,16 +2925,16 @@ export default function ShopGame() {
                                 ))}
                             </div>
                         )}
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {showTablet && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="max-w-md w-full p-1">
+                    <GamePanel className="max-w-md w-full p-1">
                         <div className="bg-black/40 rounded-xl p-4 max-h-[80vh] overflow-auto">
                             <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-lg font-bold text-white">📱 Supplier Catalog</h2>
+                                <h2 className="text-lg font-bold text-white">Supplier Catalog</h2>
                                 <button onClick={() => {setShowTablet(false); setIsPaused(false)}} className="text-2xl text-white/60 hover:text-white">×</button>
                             </div>
 
@@ -2972,15 +2995,15 @@ export default function ShopGame() {
                                 </button>
                             </div>
                         </div>
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {showPricing && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="p-4 max-w-sm w-full">
+                    <GamePanel className="p-4 max-w-sm w-full">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-white">💰 Set Shelf Prices</h2>
+                            <h2 className="text-lg font-bold text-white">Set Shelf Prices</h2>
                             <button onClick={() => setShowPricing(false)} className="text-2xl text-white/60 hover:text-white">×</button>
                         </div>
 
@@ -3024,15 +3047,15 @@ export default function ShopGame() {
                         {shelves.every(s => s.slots.every(slot => slot === null)) && (
                             <p className="text-white/50 text-center py-4">No products to price. Stock your shelves first!</p>
                         )}
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {showUpgrades && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="p-4 max-w-md w-full max-h-[80vh] overflow-auto">
+                    <GamePanel className="p-4 max-w-md w-full max-h-[80vh] overflow-auto">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-white">⬆️ Upgrades</h2>
+                            <h2 className="text-lg font-bold text-white">Upgrades</h2>
                             <button onClick={() => setShowUpgrades(false)} className="text-2xl text-white/60 hover:text-white">×</button>
                         </div>
 
@@ -3068,16 +3091,16 @@ export default function ShopGame() {
                                 </div>
                             ))}
                         </div>
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {showStorage && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="p-4 max-w-sm w-full max-h-[80vh] overflow-auto">
+                    <GamePanel className="p-4 max-w-sm w-full max-h-[80vh] overflow-auto">
                         <div className="flex justify-between items-center mb-4">
                             <div>
-                                <h2 className="text-lg font-bold text-white">📦 Storage</h2>
+                                <h2 className="text-lg font-bold text-white">Storage</h2>
                                 <div className="text-xs text-white/50">
                                     {storageCount}/{maxStorageCapacity} items
                                     {storageBonus > 0 && <span className="text-green-400 ml-1">(+{Math.round(storageBonus * 100)}% bonus)</span>}
@@ -3136,15 +3159,15 @@ export default function ShopGame() {
                                     );
                                 })
                         )}
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {showReviews && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="p-4 max-w-sm w-full max-h-[80vh] overflow-auto">
+                    <GamePanel className="p-4 max-w-sm w-full max-h-[80vh] overflow-auto">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-white">📝 Reviews</h2>
+                            <h2 className="text-lg font-bold text-white">Reviews</h2>
                             <button onClick={() => setShowReviews(false)} className="text-2xl text-white/60 hover:text-white">×</button>
                         </div>
 
@@ -3169,15 +3192,15 @@ export default function ShopGame() {
                                 </div>
                             ))
                         )}
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {showRegulars && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="p-4 max-w-sm w-full max-h-[80vh] overflow-auto">
+                    <GamePanel className="p-4 max-w-sm w-full max-h-[80vh] overflow-auto">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-white">⭐ Regular Customers</h2>
+                            <h2 className="text-lg font-bold text-white">Regular Customers</h2>
                             <button onClick={() => {setShowRegulars(false); setIsPaused(false)}} className="text-2xl text-white/60 hover:text-white">×</button>
                         </div>
 
@@ -3229,15 +3252,15 @@ export default function ShopGame() {
                                 ))}
                             </div>
                         )}
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {showAchievements && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="p-4 max-w-sm w-full max-h-[80vh] overflow-auto">
+                    <GamePanel className="p-4 max-w-sm w-full max-h-[80vh] overflow-auto">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-white">🏆 Achievements</h2>
+                            <h2 className="text-lg font-bold text-white">Achievements</h2>
                             <button onClick={() => setShowAchievements(false)} className="text-2xl text-white/60 hover:text-white">×</button>
                         </div>
 
@@ -3262,14 +3285,14 @@ export default function ShopGame() {
                                 </div>
                             ))}
                         </div>
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {showDaySummary && !gameOver && (
                 <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="p-6 max-w-sm w-full">
-                        <h2 className="text-2xl font-bold text-center mb-4 text-white">🌙 Day {day} Complete</h2>
+                    <GamePanel className="p-6 max-w-sm w-full">
+                        <h2 className="text-2xl font-bold text-center mb-4 text-white">Day {day} Complete</h2>
 
                         <div className="space-y-2 mb-4">
                             <div className="flex justify-between p-2 bg-green-500/20 rounded-xl text-white">
@@ -3282,7 +3305,7 @@ export default function ShopGame() {
                             </div>
                             {regularsServed > 0 && (
                                 <div className="flex justify-between p-2 bg-yellow-500/20 rounded-xl text-white">
-                                    <span>⭐ Regulars Served</span>
+                                    <span>Regulars Served</span>
                                     <span className="font-bold text-yellow-400">{regularsServed}</span>
                                 </div>
                             )}
@@ -3318,7 +3341,7 @@ export default function ShopGame() {
 
                         {tomorrowTeaser && (
                             <div className="text-center text-white/70 text-sm mb-4 p-3 bg-white/10 rounded-xl italic">
-                                💭 {tomorrowTeaser}
+                                {tomorrowTeaser}
                             </div>
                         )}
 
@@ -3337,13 +3360,13 @@ export default function ShopGame() {
                         >
                             Start Day {day + 1} →
                         </button>
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
 
             {gameOver && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <GlassCard className="p-6 max-w-sm w-full text-center">
+                    <GamePanel className="p-6 max-w-sm w-full text-center">
                         <h2 className="text-3xl font-bold mb-2 text-white">💸 Bankrupt!</h2>
                         <p className="text-white/70 mb-4">
                             You couldn&apos;t pay your debts after {day} days.
@@ -3370,7 +3393,7 @@ export default function ShopGame() {
                         >
                             🔄 Try Again
                         </button>
-                    </GlassCard>
+                    </GamePanel>
                 </div>
             )}
             </div>

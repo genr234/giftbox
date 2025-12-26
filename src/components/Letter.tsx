@@ -166,7 +166,7 @@ export default function Letter({
                                 opacity: 0,
                             }}
                         >
-                            <Image src="/letter.png" alt="Letter" fill style={{ objectFit: 'contain' }} draggable={false} />
+                            <Image src="./letter.png" alt="Letter" fill style={{ objectFit: 'contain' }} draggable={false} />
 
                             <div className="absolute pointer-events-auto" style={{ top: '22%', left: '19%' }}>
                                 <div className="w-auto max-w-[85%] text-left whitespace-normal break-words">

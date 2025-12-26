@@ -11,7 +11,7 @@ const gameScenes: Scene[] = [
     {
         "id": "wake-up",
         "type": "dialogue",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "./backgrounds/bedroom_day.png",
         "transition": "fade",
         "dialogue": {
             "text": "*yawns*",
@@ -23,7 +23,7 @@ const gameScenes: Scene[] = [
     {
         "id": "wake-up-1",
         "type": "dialogue",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "./backgrounds/bedroom_day.png",
         "transition": "fade",
         "dialogue": {
             "text": "did i oversleep again??",
@@ -35,7 +35,7 @@ const gameScenes: Scene[] = [
     {
         "id": "exploration-1741",
         "type": "exploration",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "./backgrounds/bedroom_day.png",
         "transition": "fade",
         "hint": "Look around...",
         "hotspots": [
@@ -71,7 +71,7 @@ const gameScenes: Scene[] = [
     {
         "id": "clothes",
         "type": "dialogue",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "./backgrounds/bedroom_day.png",
         "transition": "fade",
         "dialogue": {
             "text": "perfectly ironed! nice!",
@@ -83,7 +83,7 @@ const gameScenes: Scene[] = [
     {
         "id": "dialogue-9842",
         "type": "dialogue",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "./backgrounds/bedroom_day.png",
         "transition": "fade",
         "dialogue": {
             "text": "it's a really nice day!",
@@ -95,7 +95,7 @@ const gameScenes: Scene[] = [
     {
         "id": "dialogue-9532",
         "type": "dialogue",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "./backgrounds/bedroom_day.png",
         "transition": "fade",
         "dialogue": {
             "text": "i wish i could just go back to sleep...",
@@ -107,7 +107,7 @@ const gameScenes: Scene[] = [
     {
         "id": "dialogue-1655",
         "type": "dialogue",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "./backgrounds/bedroom_day.png",
         "transition": "fade",
         "dialogue": {
             "text": "patricia! there's a letter for you!",
@@ -119,7 +119,7 @@ const gameScenes: Scene[] = [
     {
         "id": "dialogue-1038",
         "type": "dialogue",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "./backgrounds/bedroom_day.png",
         "transition": "fade",
         "dialogue": {
             "text": "a letter? i wasn't expecting anything...",
@@ -131,7 +131,7 @@ const gameScenes: Scene[] = [
     {
         "id": "exploration-9594",
         "type": "exploration",
-        "background": "/backgrounds/dining_room.png",
+        "background": "./backgrounds/dining_room.png",
         "transition": "fade",
         "hint": "there's something on the table...",
         "hotspots": [
@@ -150,7 +150,7 @@ const gameScenes: Scene[] = [
     {
         "id": "dialogue-5794",
         "type": "dialogue",
-        "background": "/backgrounds/dining_room.png",
+        "background": "./backgrounds/dining_room.png",
         "transition": "fadeBlack",
         "dialogue": {
             "text": "let's check it out...",
@@ -162,7 +162,7 @@ const gameScenes: Scene[] = [
     {
         "id": "dialogue-9210",
         "type": "dialogue",
-        "background": "/backgrounds/dining_room.png",
+        "background": "./backgrounds/dining_room.png",
         "transition": "fade",
         "dialogue": {
             "text": "grandpa's shop?!?! i haven't been there in so long...",
@@ -174,7 +174,7 @@ const gameScenes: Scene[] = [
     {
         "id": "end",
         "type": "dialogue",
-        "background": "/backgrounds/dining_room.png",
+        "background": "./backgrounds/dining_room.png",
         "transition": "fade",
         "dialogue": {
             "text": "i better get started...",
@@ -188,7 +188,7 @@ export default function GamePage() {
     const router = useRouter();
 
     useEffect(() => {
-        router.prefetch('/shop');
+        router.prefetch('./shop');
     })
 
     const {
@@ -199,7 +199,7 @@ export default function GamePage() {
         restart,
     } = useVisualNovel({
         scenes: gameScenes,
-        onGameEnd: () => router.push('/shop'),
+        onGameEnd: () => router.push('./shop'),
     });
 
     return (
