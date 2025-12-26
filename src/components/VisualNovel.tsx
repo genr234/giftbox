@@ -18,6 +18,7 @@ export interface Hotspot {
     cursor?: string;
     onClickResult?: string;
     hoverHint?: string;
+    showLetter?: boolean;
 }
 
 export interface BaseScene {

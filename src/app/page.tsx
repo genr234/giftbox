@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import VisualNovel, { Scene } from '@/components/VisualNovel';
 import { useVisualNovel } from '@/app/hooks/useVisualNovel';
+import {useRouter} from "next/navigation";
 
 // Starting scene: wake-up
 
@@ -149,7 +150,7 @@ const gameScenes: Scene[] = [
     {
         "id": "dialogue-5794",
         "type": "dialogue",
-        "background": "/backgrounds/bedroom_day.png",
+        "background": "/backgrounds/dining_room.png",
         "transition": "fadeBlack",
         "dialogue": {
             "text": "let's check it out...",
@@ -168,10 +169,10 @@ const gameScenes: Scene[] = [
             "speaker": "",
             "speakerColor": "#fcd34d"
         },
-        "nextSceneId": "dialogue-5593"
+        "nextSceneId": "end"
     },
     {
-        "id": "dialogue-5593",
+        "id": "end",
         "type": "dialogue",
         "background": "/backgrounds/dining_room.png",
         "transition": "fade",
@@ -184,7 +185,11 @@ const gameScenes: Scene[] = [
 ];
 
 export default function GamePage() {
-    const [gameEnded, setGameEnded] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        router.prefetch('/shop');
+    })
 
     const {
         currentScene,
@@ -194,14 +199,8 @@ export default function GamePage() {
         restart,
     } = useVisualNovel({
         scenes: gameScenes,
-        onGameEnd: () => setGameEnded(true),
+        onGameEnd: () => router.push('/shop'),
     });
-
-    if (gameEnded) {
-        return (
-            <></>
-        );
-    }
 
     return (
         <VisualNovel
@@ -209,7 +208,7 @@ export default function GamePage() {
             allBackgrounds={allBackgrounds}
             onAdvance={handleAdvance}
             onHotspotClick={handleHotspotClick}
-            textSpeed={35}
+            textSpeed={20}
         />
     );
 }
