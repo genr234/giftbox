@@ -562,7 +562,7 @@ export default function ShopGame() {
     const [regularsServed, setRegularsServed] = useState(0);
     const [perfectServings, setPerfectServings] = useState(0);
 
-    const rent = 30 + (day * 5);
+    const rent = 30 + (day * 10);
     const [debt, setDebt] = useState(0);
     const [gameOver, setGameOver] = useState(false);
 
@@ -2825,8 +2825,7 @@ export default function ShopGame() {
                                             ))}
                                         </div>
                                     )}
-
-Go                                    <div className="mt-3 pt-3 border-t border-white/10 flex justify-between items-center">
+                                    <div className="mt-3 pt-3 border-t border-white/10 flex justify-between items-center">
                                         <div>
                                             {activeCustomer.satisfaction > 60 && activeCustomer.offeredProducts.length >= 1 && (
                                                 <span className="text-green-400 text-sm font-bold flex items-center gap-1 animate-pulse">

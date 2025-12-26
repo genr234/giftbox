@@ -4,103 +4,181 @@ import { useState } from 'react';
 import VisualNovel, { Scene } from '@/components/VisualNovel';
 import { useVisualNovel } from '@/app/hooks/useVisualNovel';
 
+// Starting scene: wake-up
+
 const gameScenes: Scene[] = [
     {
-        id: 'scene1',
-        type: 'dialogue',
-        background: 'backgrounds/bedroom_day.png',
-        transition: 'fade',
-        dialogue: {
-            text: 'This is the first scene. Click to continue.',
-        }
+        "id": "wake-up",
+        "type": "dialogue",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "*yawns*",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "wake-up-1"
     },
     {
-        id: 'scene2',
-        type: 'dialogue',
-        background: 'backgrounds/bedroom_day.png',
-        transition: 'fade',
-        dialogue: {
-            text: 'This is the second scene. Click to continue.',
-        }
+        "id": "wake-up-1",
+        "type": "dialogue",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "did i oversleep again??",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "exploration-1741"
     },
     {
-        id: 'scene3',
-        type: 'exploration',
-        background: 'backgrounds/bedroom_day.png',
-        hint: 'Look around...',
-        hotspots: [
+        "id": "exploration-1741",
+        "type": "exploration",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fade",
+        "hint": "Look around...",
+        "hotspots": [
             {
-                "id": "hotspot-1766358127772",
-                "x": 35.00979820291223,
-                "y": 7.600000000000001,
-                "width": 12.7,
-                "height": 33.6,
-                "hoverHint": "look outside...",
-                "onClickResult": "bedroom_window"
+                "id": "clothes",
+                "x": 58.76416138276511,
+                "y": 24.2,
+                "width": 13.8,
+                "height": 27.3,
+                "hoverHint": "click to interact",
+                "onClickResult": "clothes"
             },
             {
-                "id": "hotspot-1766358166337",
-                "x": 78.3,
-                "y": 10.5,
-                "width": 20.2,
-                "height": 85.51784250557579,
-                "hoverHint": "check the plant...",
-                "onClickResult": "bedroom_plant"
-            },
-            {
-                "id": "hotspot-1766358211027",
-                "x": 18.00733417683515,
-                "y": 58.734630854572146,
-                "width": 16.030537625184966,
-                "height": 18.934405917001868,
-                "hoverHint": "look at your desk...",
-                "onClickResult": "bedroom_desk"
-            },
-            {
-                "id": "hotspot-1766359290050",
-                "x": 7.247110291437027,
-                "y": 21.8,
-                "width": 14.052889708562974,
-                "height": 42.2,
-                "hoverHint": "look inside the mirror...",
-                "onClickResult": "bedroom_mirror"
-            },
-            {
-                "id": "hotspot-1766358308559",
-                "x": 59.5,
-                "y": 24.799999999999997,
+                "id": "hotspot-5439",
+                "x": 34.7,
+                "y": 7.199999999999999,
                 "width": 13.1,
-                "height": 29.054629329571668,
-                "hoverHint": "look at your clothes...",
-                "onClickResult": "bedroom_clothes"
+                "height": 34.4,
+                "hoverHint": "click to interact",
+                "onClickResult": "dialogue-9842"
             },
             {
-                "id": "hotspot-1766358326078",
-                "x": 35.51181617378997,
-                "y": 54.440229512571726,
-                "width": 30.69692908151231,
-                "height": 22.059770487428274,
-                "hoverHint": "Click to interact",
-                "onClickResult": "bedroom_bed"
+                "id": "hotspot-0046",
+                "x": 33.4205431391856,
+                "y": 54.8,
+                "width": 31.079456860814403,
+                "height": 19.93750466649975,
+                "hoverHint": "click to interact",
+                "onClickResult": "dialogue-9532"
             }
-        ],
+        ]
     },
     {
-        id: 'scene4',
-        type: 'dialogue',
-        background: 'backgrounds/bedroom_day.png',
-        transition: 'fade',
-        dialogue: {
-            text: 'You clicked on the desk. It is very messy.',
-        }
+        "id": "clothes",
+        "type": "dialogue",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "perfectly ironed! nice!",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "exploration-1741"
     },
     {
-        id: 'scene5',
-        type: 'dialogue',
-        background: 'backgrounds/bedroom_day.png',
-        transition: 'fade',
-        dialogue: {
-            text: 'You clicked on the window. It is a sunny day outside.',
+        "id": "dialogue-9842",
+        "type": "dialogue",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "it's a really nice day!",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "exploration-1741"
+    },
+    {
+        "id": "dialogue-9532",
+        "type": "dialogue",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "i wish i could just go back to sleep...",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "dialogue-1655"
+    },
+    {
+        "id": "dialogue-1655",
+        "type": "dialogue",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "patricia! there's a letter for you!",
+            "speaker": "mom",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "dialogue-1038"
+    },
+    {
+        "id": "dialogue-1038",
+        "type": "dialogue",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "a letter? i wasn't expecting anything...",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "dialogue-5794"
+    },
+    {
+        "id": "exploration-9594",
+        "type": "exploration",
+        "background": "/backgrounds/dining_room.png",
+        "transition": "fade",
+        "hint": "there's something on the table...",
+        "hotspots": [
+            {
+                "id": "hotspot-2787",
+                "x": 56.65064693682213,
+                "y": 72.9,
+                "width": 9.14935306317787,
+                "height": 12.6,
+                "hoverHint": "click to interact",
+                "showLetter": true,
+                "onClickResult": "dialogue-9210"
+            }
+        ]
+    },
+    {
+        "id": "dialogue-5794",
+        "type": "dialogue",
+        "background": "/backgrounds/bedroom_day.png",
+        "transition": "fadeBlack",
+        "dialogue": {
+            "text": "let's check it out...",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "exploration-9594"
+    },
+    {
+        "id": "dialogue-9210",
+        "type": "dialogue",
+        "background": "/backgrounds/dining_room.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "grandpa's shop?!?! i haven't been there in so long...",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
+        },
+        "nextSceneId": "dialogue-5593"
+    },
+    {
+        "id": "dialogue-5593",
+        "type": "dialogue",
+        "background": "/backgrounds/dining_room.png",
+        "transition": "fade",
+        "dialogue": {
+            "text": "i better get started...",
+            "speaker": "",
+            "speakerColor": "#fcd34d"
         }
     }
 ];

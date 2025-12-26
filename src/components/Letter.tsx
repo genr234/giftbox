@@ -170,9 +170,13 @@ export default function Letter({
 
                             <div className="absolute pointer-events-auto" style={{ top: '22%', left: '19%' }}>
                                 <div className="w-auto max-w-[85%] text-left whitespace-normal break-words">
-                                    <h1 className={`text-8xl sm:text-9xl font-bold ${hurricane.className} text-gray-900`}>Letter</h1>
-                                    <p className={`mt-4 text-lg sm:text-xl ${meowScript.className} text-gray-700`}>
-                                        This is the content of the letter. It now starts at the top-left and is constrained to the letter's area, wrapping neatly and staying inside the image even when resized.
+                                    <h1 className={`text-7xl font-bold ${hurricane.className} text-gray-900`}>Dear Patricia</h1>
+                                    <p className={`mt-4 sm:text-xl ${meowScript.className} text-gray-700`}>
+                                        I hope this letter finds you well.<br /> If you're reading this it means i'm no longer here. <br/> I wanted to take a moment to tell you how proud I am of the person you are becoming. Your kindness, intelligence, and creativity never cease to amaze me.<br /><br />
+                                        Remember to always follow your dreams and stay true to yourself. The world is full of opportunities waiting for you to seize them.<br /><br />
+                                        As a token of my love i left the old cafe by the park in your name. I hope you find joy and comfort there, just as I did.<br /><br />
+                                        With all my love,<br />
+                                        Grandpa
                                     </p>
                                 </div>
                             </div>
@@ -188,7 +192,7 @@ export default function Letter({
                     onClick={onClose}
                     className="fixed top-8 right-8 bg-stone-800/90 hover:bg-stone-700 text-stone-200 px-4 py-2 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm border border-stone-600"
                 >
-                    close (ESC)
+                    close
                 </button>
             )}
         </div>
